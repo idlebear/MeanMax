@@ -646,6 +646,105 @@ struct GlobalId: IdGenerator {
 }
 
 
+enum Move {
+    case wait, accel( Point, Int ), skill( Point )
+    
+    var description: String {
+        switch self {
+        case .wait:
+            return "WAIT"
+        case .accel( let point, let power ):
+            return "\(point.x) \(point.y) \(power)"
+        case .skill( let target ):
+            return "SKILL \(target.x) \(target.y)"
+        }
+    }
+}
+
+
+enum UnitType {
+    case reaper, destroyer, doof, tanker, wreck, tar, oil, unknown
+    
+    init( _ val: Int ) {
+        switch  val {
+        case 0:
+            self = .reaper
+        case 1:
+            self = .destroyer
+        case 2:
+            self = .doof
+        case 3:
+            self = .tanker
+        case 4:
+            self = .wreck
+        case 5:
+            self = .tar
+        case 6:
+            self = .oil
+        default:
+            self = .unknown
+        }
+    }
+    
+    func friction() -> Double {
+        switch self {
+        case .reaper:
+            return 0.2
+        case .destroyer:
+            return 0.3
+        case .doof:
+            return 0.25
+        case .tanker:
+            return 0.2
+        default:
+            return 1
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .reaper:
+            return "Reaper"
+        case .destroyer:
+            return "Destroyer"
+        case .doof:
+            return "Doof"
+        case .tanker:
+            return "Tanker"
+        case .wreck:
+            return "Wreck"
+        case .tar:
+            return "TarSpill"
+        case .oil:
+            return "OilSlick"
+        case .unknown:
+            return "Unknown"
+        }
+    }
+    
+    var shortName: String {
+        switch self {
+        case .reaper:
+            return "R"
+        case .destroyer:
+            return "D"
+        case .doof:
+            return "d"
+        case .tanker:
+            return "T"
+        case .wreck:
+            return "W"
+        case .tar:
+            return "T"
+        case .oil:
+            return "O"
+        case .unknown:
+            return "U"
+        }
+    }
+}
+
+
 
 class Ref {
     
@@ -1705,9 +1804,6 @@ class Ref {
                 unit.move(delta)
             }
             t += collision.t;
-            
-//            newFrame(t);
-            
             playCollision(collision);
             collision = getNextCollision();
         }
@@ -1734,13 +1830,6 @@ class Ref {
             }
         }
     
-//    newFrame(1.0);
-//    snapshot();
-    
-        // if (!tankersToRemove.isEmpty()) {
-        //   tankersToRemove.forEach(tanker -> addDeadToFrame(tanker));
-        // }
-        
         for tanker in tankersToRemove {
             if let index = units.index(of: tanker) {
                 units.remove(at: index)
