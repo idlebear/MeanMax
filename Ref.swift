@@ -1,11 +1,8 @@
 //
 //  Ref.swift
-//  WaterPigs
 //
 //  Ported from the competition referee at: https://github.com/CodinGame/MeanMax/blob/master/Referee.java
 //  Created by Barry Gilhuly on 2017-11-19.
-//  Copyright © 2017 Red Maples Consulting. All rights reserved.
-//
 
 #if os(Linux)
     import Glibc
